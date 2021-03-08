@@ -1,12 +1,6 @@
 <package>
   <name>integ_description</name>
   <version>0.5.0</version>
-
-  <description>This package contains a number of URDF tutorials.</description>
-  <author email="davidvlu@gmail.com">David V. Lu!!</author>
-
-  <maintainer email="davidvlu@gmail.com">David V. Lu!!</maintainer>
-
   <license>BSD</license>
   <url>http://ros.org/wiki/urdf_tutorial</url>
 
