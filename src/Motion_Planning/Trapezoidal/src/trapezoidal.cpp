@@ -28,7 +28,8 @@ int main(int argc, char **argv)
   TrapezoidalNode TrapezoidalNode ;
 
 
-  ros::spin();
+  while(ros::ok())
+  {}
 
   return 0;
 } // end main()
