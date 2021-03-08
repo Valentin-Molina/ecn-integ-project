@@ -1,6 +1,10 @@
 <package>
   <name>integ_description</name>
   <version>0.5.0</version>
+  <description>
+    Description for INTEG project at Ecole Centrale de Nantes.
+  </description>
+  <maintainer email="Mahdi.moussabbir.zone@gmail.com">Mahdi Moussabbir</maintainer>
   <license>BSD</license>
   <url>http://ros.org/wiki/urdf_tutorial</url>
 
