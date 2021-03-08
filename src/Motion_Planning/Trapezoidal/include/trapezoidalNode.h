@@ -12,6 +12,6 @@ public:
     ~TrapezoidalNode();
 
     //void subscriberCallback(const node_example::Chatter::ConstPtr &subMsg);
-}
+};
 
 #endif // TRAPEZOIDAL_NODE_H

@@ -1,10 +1,10 @@
 #include "trapezoidalNode.h"
 
-TalkerNode::TrapezoidalNode()
+TrapezoidalNode::TrapezoidalNode()
 {
 }
 
-TalkerNode::~TrapezoidalNode()
+TrapezoidalNode::~TrapezoidalNode()
 {
 }
 /*
