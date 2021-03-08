@@ -1,7 +1,7 @@
 #ifndef TRAPEZOIDAL_NODE_H
 #define TRAPEZOIDAL_NODE_H
 
-// ROS includes.
+// ROS includes
 #include<ros/ros.h>
 #include<ros/time.h>
 
