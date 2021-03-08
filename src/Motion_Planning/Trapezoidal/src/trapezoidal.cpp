@@ -1,4 +1,12 @@
-#include "../include/trapezoidalNode.h"
+#include "ros/ros.h"
+#include "std_msgs/String.h"
+#include "geometry_msgs/Pose2D.h"
+
+
+void subscriberCallback(const geometry_msgs::Pose2D& msg)
+{
+	ROS_INFO("I heard: ([%f],[%f])", msg.x, msg.y);
+}
 
 int main(int argc, char **argv)
 {
@@ -6,27 +14,11 @@ int main(int argc, char **argv)
   ros::init(argc, argv, "trapezoidal_planning");
   ros::NodeHandle nh;
 
-  // Create a new NodeExample object.
-  //NodeExample *node_example = new NodeExample();
-  TrapezoidalNode *t = new TrapezoidalNode();
 
   // Create a publisher and name the topic.
-  //ros::Publisher pub = nh.advertise<node_example::Chatter>("example", 10);
+  ros::Subscriber sub = nh.subscribe("Waypoints", 1000, subscriberCallback);
 
-  // Tell ROS how fast to run this node.
-  ros::Rate r(40);
-  
-  //std::string msg = "Hello!";
-
-  // Main loop.
-  while (nh.ok())
-  {
-    // Publish the message.
-    //t->publisherCallback(&pub, msg);
-
-    ros::spinOnce();
-    r.sleep();
-  }
+  ros::spin();
 
   return 0;
 } // end main()

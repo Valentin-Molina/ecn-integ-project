@@ -11,7 +11,7 @@ public:
     TrapezoidalNode();
     ~TrapezoidalNode();
 
-    //void subscriberCallback(const node_example::Chatter::ConstPtr &subMsg);
+    void publisherCallback(ros::Publisher, std::string);
 };
 
 #endif // TRAPEZOIDAL_NODE_H
