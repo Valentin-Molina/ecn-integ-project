@@ -9,10 +9,6 @@ find_package(
     message_generation
     )
 
-
-
-
-
 generate_messages(
     DEPENDENCIES
     std_msgs

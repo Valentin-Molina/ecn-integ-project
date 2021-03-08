@@ -4,14 +4,23 @@
 // ROS includes
 #include<ros/ros.h>
 #include<ros/time.h>
+#include<vector>
+#include <geometry_msgs/Pose2D.h>
 
 class TrapezoidalNode
 {
 public:
     TrapezoidalNode();
     ~TrapezoidalNode();
+    void subscriberCallback(const geometry_msgs::Pose2D& msg);
 
-    void publisherCallback(ros::Publisher, std::string);
+private:
+    std::vector<geometry_msgs::Pose2D> buffer_ ;
+
+    ros::NodeHandle nh_ ;
+    // Create a publisher and name the topic.
+    ros::Subscriber sub_ ;
+
 };
 
 #endif // TRAPEZOIDAL_NODE_H

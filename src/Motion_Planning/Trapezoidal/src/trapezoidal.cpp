@@ -4,13 +4,15 @@
 #include "../include/trapezoidalNode.h"
 
 
-void subscriberCallback(const geometry_msgs::Pose2D& msg)
+void TrapezoidalNode::subscriberCallback(const geometry_msgs::Pose2D& msg)
 {
-	ROS_INFO("I heard: ([%f],[%f])", msg.x, msg.y);
+    ROS_INFO("I heard: ([%f],[%f])", msg.x, msg.y);
+    buffer_.push_back(msg);
 }
 
 TrapezoidalNode::TrapezoidalNode()
 {
+    sub_ = nh_.subscribe("Waypoints", 1000, &TrapezoidalNode::subscriberCallback, this);
 }
 
 TrapezoidalNode::~TrapezoidalNode()
@@ -21,11 +23,10 @@ int main(int argc, char **argv)
 {
   // Set up ROS.
   ros::init(argc, argv, "trapezoidal_planning");
-  ros::NodeHandle nh;
 
 
-  // Create a publisher and name the topic.
-  ros::Subscriber sub = nh.subscribe("Waypoints", 1000, subscriberCallback);
+  TrapezoidalNode TrapezoidalNode ;
+
 
   ros::spin();
 
