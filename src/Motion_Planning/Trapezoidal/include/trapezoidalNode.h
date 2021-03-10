@@ -6,6 +6,7 @@
 #include<ros/time.h>
 #include<vector>
 #include <geometry_msgs/Pose2D.h>
+#include <sensor_msgs/JointState.h>
 #include <math.h>
 
 
@@ -21,7 +22,7 @@ public:
     TrapezoidalNode();
     ~TrapezoidalNode();
     void subscriberCallback(const geometry_msgs::Pose2D& msg);
-    std::vector<Vector2f> PlanTrajectory(const Vector2f& qi, const Vector2f& qf, float freq, Vector2f kv, Vector2f ka);
+    std::vector<sensor_msgs::JointState> PlanTrajectory(const Vector2f& qi, const Vector2f& qf, float freq, Vector2f kv, Vector2f ka);
 
 private:
     std::vector<geometry_msgs::Pose2D> buffer_ ;

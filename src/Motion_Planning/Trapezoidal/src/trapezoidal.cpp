@@ -18,9 +18,9 @@ TrapezoidalNode::~TrapezoidalNode()
 {
 }
 
-std::vector<Vector2f> TrapezoidalNode::PlanTrajectory(const Vector2f& qi, const Vector2f& qf, float freq, Vector2f kv, Vector2f ka)
+std::vector<sensor_msgs::JointState> TrapezoidalNode::PlanTrajectory(const Vector2f& qi, const Vector2f& qf, float freq, Vector2f kv, Vector2f ka)
 {
-    std::vector<Vector2f> ans;
+    std::vector<sensor_msgs::JointState> ans;
 
     Vector2f D;
     D.x = qf.x-qi.x;
@@ -39,10 +39,49 @@ std::vector<Vector2f> TrapezoidalNode::PlanTrajectory(const Vector2f& qi, const 
     float lambda1 = std::min(1.0f,kv.y*std::abs(D.x)/(kv.x*std::abs(D.y)));
     float mu1 = std::min(1.0f,ka.y*std::abs(D.x)/(ka.x*std::abs(D.y)));
 
-//    float lambda2 = lambda1*kv.x*std::abs(D.y)/(kv.y*std::abs(D.x));
-//    float mu2 = mu1 * ka.x*std::abs(D.y)/(ka.y*std::abs(D.x));
-
     float tf = lambda1*kv.x/(mu1*ka.x) + std::abs(D.x)/(lambda1*kv.x);
+    float tau = lambda1*kv.x/(mu1*ka.x);
+
+    float t = 0;
+    float dt = 1/freq;
+
+    float denom = tau*(tf-tau);
+
+    while(t <= tau)
+    {
+        sensor_msgs::JointState state;
+        state.position = {qi.x + D.x*t*t/(2*denom), qi.y + D.y*t*t/(2*denom)};
+        state.velocity = {D.x*t/denom, D.y*t/denom};
+        state.effort = {D.x/denom,D.y/denom};
+
+        ans.push_back(state);
+        t+=dt;
+    }
+
+    denom = tf-tau;
+
+    while(t < tf-tau)
+    {
+        sensor_msgs::JointState state;
+        state.position = {qi.x + D.x*(2*t-tau)/(2*denom), qi.y + D.y*(2*t-tau)/(2*denom)};
+        state.velocity = {D.x/denom, D.y/denom};
+        state.effort = {0,0};
+
+        ans.push_back(state);
+        t+=dt;
+    }
+
+    denom = tau*(tf-tau);
+    while (t < tf)
+    {
+        sensor_msgs::JointState state;
+        state.position = {qi.x + D.x*(1-(tf-t)*(tf-t)/(2*denom)), qi.y + D.y*(1-(tf-t)*(tf-t)/(2*denom))};
+        state.velocity = {D.x*(tf-t)/denom, D.x*(tf-t)/denom};
+        state.effort = {-D.x/denom,-D.y/denom};
+
+        ans.push_back(state);
+        t+=dt;
+    }
 
     return ans;
 }
