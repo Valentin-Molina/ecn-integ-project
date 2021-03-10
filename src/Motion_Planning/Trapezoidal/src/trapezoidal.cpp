@@ -11,17 +11,26 @@ void TrapezoidalNode::subscriberCallback(const geometry_msgs::Pose2D& msg)
 
 TrapezoidalNode::TrapezoidalNode()
 {
+    pubTimer_ = nh_.createTimer(ros::Duration(0.01), [this](){this->timerCallback();});
     sub_ = nh_.subscribe("Waypoints", 1000, &TrapezoidalNode::subscriberCallback, this);
+    pub_ = nh_.advertise<sensor_msgs::JointState>("Trajectoire", 1000);
 }
 
 TrapezoidalNode::~TrapezoidalNode()
 {
 }
 
-std::vector<sensor_msgs::JointState> TrapezoidalNode::PlanTrajectory(const Vector2f& qi, const Vector2f& qf, float freq, Vector2f kv, Vector2f ka)
+void TrapezoidalNode::timerCallback()
 {
-    std::vector<sensor_msgs::JointState> ans;
+    if(!currentTrajectory_.empty())
+    {
+        pub_.publish(currentTrajectory_[0]);
+        currentTrajectory_.erase(currentTrajectory_.begin());
+    }
+}
 
+void TrapezoidalNode::PlanTrajectory(const Vector2f& qi, const Vector2f& qf, float freq, Vector2f kv, Vector2f ka)
+{
     Vector2f D;
     D.x = qf.x-qi.x;
     D.y = qf.y-qi.y;
@@ -54,7 +63,7 @@ std::vector<sensor_msgs::JointState> TrapezoidalNode::PlanTrajectory(const Vecto
         state.velocity = {D.x*t/denom, D.y*t/denom};
         state.effort = {D.x/denom,D.y/denom};
 
-        ans.push_back(state);
+        currentTrajectory_.push_back(state);
         t+=dt;
     }
 
@@ -67,7 +76,7 @@ std::vector<sensor_msgs::JointState> TrapezoidalNode::PlanTrajectory(const Vecto
         state.velocity = {D.x/denom, D.y/denom};
         state.effort = {0,0};
 
-        ans.push_back(state);
+        currentTrajectory_.push_back(state);
         t+=dt;
     }
 
@@ -79,11 +88,9 @@ std::vector<sensor_msgs::JointState> TrapezoidalNode::PlanTrajectory(const Vecto
         state.velocity = {D.x*(tf-t)/denom, D.x*(tf-t)/denom};
         state.effort = {-D.x/denom,-D.y/denom};
 
-        ans.push_back(state);
+        currentTrajectory_.push_back(state);
         t+=dt;
     }
-
-    return ans;
 }
 
 int main(int argc, char **argv)
