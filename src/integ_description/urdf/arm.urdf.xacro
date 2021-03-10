@@ -41,10 +41,6 @@
       <material name="noir"/>
     </visual>
 
-    <collision>
-      <xacro:prism_geometry/>
-    </collision>
-
     <inertial>
       <xacro:insert_block name="origin"/>
       <mass value="${mass}"/>
@@ -70,10 +66,6 @@
       <xacro:cylinder_geometry/>
       <material name="blanc"/>
     </visual>
-
-    <collision>
-      <xacro:cylinder_geometry/>
-    </collision>
 
   </xacro:macro>
 
