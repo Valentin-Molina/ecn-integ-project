@@ -18,11 +18,11 @@
 
 
   <!-- Materials -->
-  <material name="orange">
-    <color rgba="1.00 0.67 0.02 1.00"/>
+  <material name="noir">
+    <color rgba="0.1 0.1 0.1 1.00"/>
   </material>
 
-  <material name="gray">
+  <material name="blanc">
     <color rgba="0.80 0.80 0.80 1.00"/>
   </material>
 
@@ -38,7 +38,7 @@
 
     <visual>
       <xacro:prism_geometry/>
-      <material name="orange"/>
+      <material name="noir"/>
     </visual>
 
     <collision>
@@ -68,7 +68,7 @@
 
     <visual>
       <xacro:cylinder_geometry/>
-      <material name="gray"/>
+      <material name="blanc"/>
     </visual>
 
     <collision>
@@ -125,7 +125,7 @@
     </link>
 
     <gazebo reference="${parent}">
-      <material>Gazebo/Orange</material>
+      <material>Gazebo/noir</material>
     </gazebo>
 
   </xacro:macro>
