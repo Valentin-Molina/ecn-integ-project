@@ -5,13 +5,25 @@
 
 void TrapezoidalNode::subscriberCallback(const geometry_msgs::Pose2D& msg)
 {
-    ROS_INFO("I heard: ([%f],[%f])", msg.x, msg.y);
+    //ROS_INFO("I heard: ([%f],[%f])", msg.x, msg.y);
     buffer_.push_back(msg);
+
+    Vector2f kv = {3.6,7};
+    Vector2f ka = {0.1,8};
+
+    for(auto pos : buffer_)
+    {
+        Vector2f qf;
+        qf.x = pos.x;
+        qf.y = pos.y;
+
+        PlanTrajectory({0,0},qf,100,kv,ka);
+    }
 }
 
 TrapezoidalNode::TrapezoidalNode()
 {
-    pubTimer_ = nh_.createTimer(ros::Duration(0.01), [this](){this->timerCallback();});
+    pubTimer_ = nh_.createTimer(ros::Duration(0.01), &TrapezoidalNode::timerCallback, this);
     sub_ = nh_.subscribe("Waypoints", 1000, &TrapezoidalNode::subscriberCallback, this);
     pub_ = nh_.advertise<sensor_msgs::JointState>("Trajectoire", 1000);
 }
@@ -20,7 +32,7 @@ TrapezoidalNode::~TrapezoidalNode()
 {
 }
 
-void TrapezoidalNode::timerCallback()
+void TrapezoidalNode::timerCallback(const ros::TimerEvent& event)
 {
     if(!currentTrajectory_.empty())
     {

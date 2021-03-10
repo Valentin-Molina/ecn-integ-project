@@ -33,7 +33,7 @@ private:
     ros::Publisher pub_ ;
     ros::Timer pubTimer_ ;
 
-    void timerCallback();
+    void timerCallback(const ros::TimerEvent&);
 
 
     //provisional : services will be used later
