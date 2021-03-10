@@ -12,17 +12,17 @@
   <xacro:property name="link_side" value="0.04"/>
   <xacro:property name="joint_radius" value="0.036"/>
   <xacro:property name="joint_length" value="0.05"/>
-  <xacro:property name="leg_length" value="0.00"/>
-  <xacro:property name="arm_length" value="0.60"/>
-  <xacro:property name="hand_length" value="0.2"/>
-
+  <xacro:property name="leg_length" value="0"/>
+  <xacro:property name="arm_length" value="0"/>
+  <xacro:property name="hand_length" value="0.8"/>
+  <xacro:property name="finger_length" value="0.6"/>
 
   <!-- Materials -->
-  <material name="noir">
-    <color rgba="0.1 0.1 0.1 1.00"/>
+  <material name="orange">
+    <color rgba="1.00 0.67 0.02 1.00"/>
   </material>
 
-  <material name="blanc">
+  <material name="gray">
     <color rgba="0.80 0.80 0.80 1.00"/>
   </material>
 
@@ -38,7 +38,7 @@
 
     <visual>
       <xacro:prism_geometry/>
-      <material name="noir"/>
+      <material name="orange"/>
     </visual>
 
     <collision>
@@ -48,9 +48,9 @@
     <inertial>
       <xacro:insert_block name="origin"/>
       <mass value="${mass}"/>
-      <inertia ixx="${(mass/6)*(side*side)}"
+      <inertia ixx="${(mass/12)*(side*side+length*length)}"
                iyy="${(mass/12)*(side*side+length*length)}"
-               izz="${(mass/12)*(side*side+length*length)}"
+               izz="${(mass/6)*(side*side)}"
                ixy="0" ixz="0" iyz="0"/>
     </inertial>
 
@@ -68,7 +68,7 @@
 
     <visual>
       <xacro:cylinder_geometry/>
-      <material name="blanc"/>
+      <material name="gray"/>
     </visual>
 
     <collision>
@@ -125,7 +125,7 @@
     </link>
 
     <gazebo reference="${parent}">
-      <material>Gazebo/noir</material>
+      <material>Gazebo/Orange</material>
     </gazebo>
 
   </xacro:macro>
@@ -136,21 +136,23 @@
   <!-- Arm fixed to world frame  -->
   <joint name="world_foot_joint" type="fixed">
     <parent link="world"/>
-    <child link="leg"/>
+    <child link="arm"/>
   </joint>
+  <!--<xacro:arm_joint parent="world" child="arm" axis="0 0 1" dist="0"/>-->
 
   <!-- Joints Chain -->
-  <xacro:arm_joint parent="leg" child="arm" axis="1 0 0" dist="${leg_length}"/>
+  <!--<xacro:arm_joint parent="leg" child="arm" axis="0 0 1" dist="${leg_length}"/>-->
   <xacro:arm_joint parent="arm" child="hand" axis="1 0 0" dist="${arm_length}"/>
+  <xacro:arm_joint parent="hand" child="finger" axis="1 0 0" dist="${hand_length}"/>
 
   <!-- End effector -->
-  <link name="hand">
-    <xacro:prism_vci length="${hand_length}" side="${link_side}">
-      <origin xyz="0 0 ${hand_length/2}" rpy="0 0 0"/>
+  <link name="finger">
+    <xacro:prism_vci length="${finger_length}" side="${link_side}">
+      <origin xyz="0 0 ${finger_length/2}" rpy="0 0 0"/>
     </xacro:prism_vci>
   </link>
 
-  <gazebo reference="hand">
+  <gazebo reference="finger">
     <material>Gazebo/Red</material>
   </gazebo>
 

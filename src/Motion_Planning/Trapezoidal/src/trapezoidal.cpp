@@ -3,12 +3,6 @@
 #include "geometry_msgs/Pose2D.h"
 #include "../include/trapezoidalNode.h"
 
-struct Vector2f
-{
-    float x;
-    float y;
-};
-
 void TrapezoidalNode::subscriberCallback(const geometry_msgs::Pose2D& msg)
 {
     ROS_INFO("I heard: ([%f],[%f])", msg.x, msg.y);
