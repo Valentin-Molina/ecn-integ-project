@@ -13,6 +13,7 @@ public:
     TrapezoidalNode();
     ~TrapezoidalNode();
     void subscriberCallback(const geometry_msgs::Pose2D& msg);
+    std::vector<geometry_msgs::Pose2D> PlanTrajectory(const geometry_msgs::Pose2D& qi, const geometry_msgs::Pose2D& qf, float freq);
 
 private:
     std::vector<geometry_msgs::Pose2D> buffer_ ;
