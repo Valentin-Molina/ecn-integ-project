@@ -3,6 +3,7 @@
 #include <string>
 #include <math.h>
 #include <sstream>
+#include <iostream>
 
 #include <sensor_msgs/JointState.h>
 //inutile mais peut servir pour creer nos propres messages
@@ -49,6 +50,13 @@ int main (int argc, char** argv)
 
     ros::Rate rate(1/Te);
 
+	etat.position.resize(2);
+    etat.velocity.resize(2);
+
+    traj.position.resize(2);
+    traj.velocity.resize(2);
+
+
 
     commande.name.resize(2);
     commande.effort.resize(2);
@@ -70,6 +78,12 @@ int main (int argc, char** argv)
         commande.name[1] = "q2";
 
 
+
+
+        cout<<"error position q1: "<<err[0]<<endl;
+        cout<<"error position q2: "<<err[1]<<endl;
+        
+        
         // publish setpoint
         couple_pub.publish(commande);
 
