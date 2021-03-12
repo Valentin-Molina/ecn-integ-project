@@ -1,29 +1,27 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
-
-import sys
 import rospy
-from beginner_tutorials.srv import *
+from sensor_msgs.msg import JointState
+from Kinematic.srv import Kinematic,KinematicResponse
 
-def add_two_ints_client(x, y):
-    rospy.wait_for_service('add_two_ints')
+def test_callback():
+	S = JointState()
+	S.name[0] = 'fake_joint'
+	S.position[0] = 2
+	S.velocity[0] = 1
+
+	rospy.wait_for_service('Kinematic')
+	dynamic = rospy.ServiceProxy('Kinematic', KinematicResponse)
+
+	try:
+		resp = Kinematic(S)
+		print(resp)
+	except rospy.ServiceException as exc:
+		print("Service did not process request: " + str(exc))
+
+
+if __name__ == '__main__':
     try:
-        add_two_ints = rospy.ServiceProxy('add_two_ints', AddTwoInts)
-        resp1 = add_two_ints(x, y)
-        return resp1.sum
-    except rospy.ServiceException as e:
-        print("Service call failed: %s"%e)
-
-def usage():
-    return "%s [x y]"%sys.argv[0]
-
-if __name__ == "__main__":
-    if len(sys.argv) == 3:
-        x = int(sys.argv[1])
-        y = int(sys.argv[2])
-    else:
-        print(usage())
-        sys.exit(1)
-    print("Requesting %s+%s"%(x, y))
-    print("%s + %s = %s"%(x, y, add_two_ints_client(x, y)))
+        test_callback()
+    except rospy.ROSInterruptException:
+        pass
