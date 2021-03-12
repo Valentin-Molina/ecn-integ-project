@@ -50,3 +50,6 @@ qtcreator-*
 # Catkin custom files
 CATKIN_IGNORE
 src/integ_description/.DS_Store
+.DS_Store
+.DS_Store
+src/.DS_Store
