@@ -9,6 +9,11 @@ find_package(
     message_generation
     )
 
+add_service_files(
+    FILES
+    WayPoint.srv
+    )
+
 generate_messages(
     DEPENDENCIES
     std_msgs

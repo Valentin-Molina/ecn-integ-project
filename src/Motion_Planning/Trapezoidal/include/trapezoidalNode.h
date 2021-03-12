@@ -7,6 +7,7 @@
 #include<vector>
 #include <geometry_msgs/Pose2D.h>
 #include <sensor_msgs/JointState.h>
+#include <trapezoidal_planning/WayPoint.h>
 #include <math.h>
 
 
@@ -23,6 +24,8 @@ public:
     ~TrapezoidalNode();
     void subscriberCallback(const geometry_msgs::Pose2D& msg);
     void PlanTrajectory(const Vector2f& qi, const Vector2f& qf, float freq, Vector2f kv, Vector2f ka);
+    void timerCallback(const ros::TimerEvent&);
+    bool serviceCallback(trapezoidal_planning::WayPoint::Request& req, trapezoidal_planning::WayPoint::Response& res);
 
 private:
     std::vector<geometry_msgs::Pose2D> buffer_ ;
@@ -30,10 +33,13 @@ private:
 
     ros::NodeHandle nh_ ;
     ros::Subscriber sub_ ;
-    ros::Publisher pub_ ;
+    ros::Publisher pub_ ; // To be deleted qnd replaced by the service bellow
     ros::Timer pubTimer_ ;
 
-    void timerCallback(const ros::TimerEvent&);
+    // Service variables :
+    ros::ServiceServer srv_ ;
+    trapezoidal_planning::WayPoint srvData_ ;
+
 
 
     //provisional : services will be used later
