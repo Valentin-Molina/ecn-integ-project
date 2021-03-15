@@ -33,7 +33,7 @@ TrapezoidalNode::~TrapezoidalNode()
 {
 }
 
-bool serviceCallback(trapezoidal_planning::WayPoint::Request& req, trapezoidal_planning::WayPoint::Response& res)
+bool TrapezoidalNode::serviceCallback(trapezoidal_planning::WayPoint::Request& req, trapezoidal_planning::WayPoint::Response& res)
 {
     // Example
     return true;
