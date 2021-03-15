@@ -31,7 +31,7 @@ int main(int argc, char** argv)
 
     ros::NodeHandle nh;
     image_transport::ImageTransport it(nh);
-    image_transport::Subscriber imsub = it.subscribe("/rrbot/camera1/image_raw", 1, &readImage);
+    image_transport::Subscriber imsub = it.subscribe("/robot/camera1/image_raw", 1, &readImage);
     ros::Publisher impub = nh.advertise<geometry_msgs::Point>("masscenter", 1000);
 
     // init color detector
