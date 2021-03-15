@@ -56,3 +56,5 @@ src/integ_description/.DS_Store
 .DS_Store
 src/.DS_Store
 *.DS_Store
+*.autosave
+.catkin_tools/
