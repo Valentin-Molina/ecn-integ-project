@@ -35,8 +35,16 @@ TrapezoidalNode::~TrapezoidalNode()
 
 bool TrapezoidalNode::serviceCallback(trapezoidal_planning::WayPoint::Request& req, trapezoidal_planning::WayPoint::Response& res)
 {
-    // Example
-    return true;
+    if(currentTrajectory_.empty())
+    {
+        ROS_INFO("New trajectory added to the buffer. Computation will start...");
+        return true ;
+    }
+    else
+    {
+        ROS_INFO("The current trajectory isn't finished.");
+        return false ;
+    }
 }
 
 void TrapezoidalNode::timerCallback(const ros::TimerEvent& event)
