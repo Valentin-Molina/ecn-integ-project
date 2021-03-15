@@ -25,7 +25,7 @@ TrapezoidalNode::TrapezoidalNode()
 {
     pubTimer_ = nh_.createTimer(ros::Duration(0.01), &TrapezoidalNode::timerCallback, this);
     sub_ = nh_.subscribe("Waypoints", 1000, &TrapezoidalNode::subscriberCallback, this); //To be replaced by the service bellow
-    //srv_ = nh_.advertiseService("Waypoint_serv", &TrapezoidalNode::serviceCallback, &TrapezoidalNode::srvData_); pb with declaration
+    srv_ = nh_.advertiseService("Waypoint_serv", &TrapezoidalNode::serviceCallback, this);
     pub_ = nh_.advertise<sensor_msgs::JointState>("Trajectoire", 1000);
 }
 
