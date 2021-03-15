@@ -23,13 +23,15 @@ public:
     TrapezoidalNode();
     ~TrapezoidalNode();
     void subscriberCallback(const geometry_msgs::Pose2D& msg);
-    void PlanTrajectory(const Vector2f& qi, const Vector2f& qf, float freq, Vector2f kv, Vector2f ka);
+    void PlanTrajectory(const Vector2f& qi, const Vector2f& qf, float freq);
+    void PlanTrajectoryFromWaypointsBuffer(float freq);
     void timerCallback(const ros::TimerEvent&);
     bool serviceCallback(trapezoidal_planning::WayPoint::Request& req, trapezoidal_planning::WayPoint::Response& res);
 
 private:
     std::vector<geometry_msgs::Pose2D> buffer_ ;
     std::vector<sensor_msgs::JointState> currentTrajectory_ ;
+    Vector2f kv, ka;
 
     ros::NodeHandle nh_ ;
     ros::Subscriber sub_ ;

@@ -2,14 +2,13 @@
 #include "std_msgs/String.h"
 #include "geometry_msgs/Pose2D.h"
 #include "../include/trapezoidalNode.h"
+#include <stdlib.h>
+
 
 void TrapezoidalNode::subscriberCallback(const geometry_msgs::Pose2D& msg)
 {
     //ROS_INFO("I heard: ([%f],[%f])", msg.x, msg.y);
     buffer_.push_back(msg);
-
-    Vector2f kv = {3.6,7};
-    Vector2f ka = {0.1,8};
 
     for(auto pos : buffer_)
     {
@@ -17,7 +16,7 @@ void TrapezoidalNode::subscriberCallback(const geometry_msgs::Pose2D& msg)
         qf.x = pos.x;
         qf.y = pos.y;
 
-        PlanTrajectory({0,0},qf,100,kv,ka);
+        PlanTrajectory({0,0},qf,100);
     }
 }
 
@@ -27,6 +26,11 @@ TrapezoidalNode::TrapezoidalNode()
     sub_ = nh_.subscribe("Waypoints", 1000, &TrapezoidalNode::subscriberCallback, this); //To be replaced by the service bellow
     srv_ = nh_.advertiseService("Waypoint_serv", &TrapezoidalNode::serviceCallback, this);
     pub_ = nh_.advertise<sensor_msgs::JointState>("Trajectoire", 1000);
+    
+    nh_.param("vMax1",kv.x,2.0f);
+    nh_.param("vMax2",kv.y,2.0f);
+    nh_.param("aMax1",ka.x,2.0f);
+    nh_.param("aMax2",ka.y,2.0f);
 }
 
 TrapezoidalNode::~TrapezoidalNode()
@@ -56,7 +60,7 @@ void TrapezoidalNode::timerCallback(const ros::TimerEvent& event)
     }
 }
 
-void TrapezoidalNode::PlanTrajectory(const Vector2f& qi, const Vector2f& qf, float freq, Vector2f kv, Vector2f ka)
+void TrapezoidalNode::PlanTrajectory(const Vector2f& qi, const Vector2f& qf, float freq)
 {
     Vector2f D;
     D.x = qf.x-qi.x;
@@ -118,6 +122,14 @@ void TrapezoidalNode::PlanTrajectory(const Vector2f& qi, const Vector2f& qf, flo
         currentTrajectory_.push_back(state);
         t+=dt;
     }
+}
+
+void TrapezoidalNode::PlanTrajectoryFromWaypointsBuffer(float freq)
+{
+	//This method computes the all trajectory given by all the Waypoints in the buffer_, then empty the buffer_ except one position.
+	//This position is then used as a starting point the next time we call this method.
+	
+	
 }
 
 int main(int argc, char **argv)
