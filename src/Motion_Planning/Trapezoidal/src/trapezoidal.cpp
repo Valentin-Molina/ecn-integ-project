@@ -7,34 +7,50 @@
 
 void TrapezoidalNode::subscriberCallback(const geometry_msgs::Pose2D& msg)
 {
-    //ROS_INFO("I heard: ([%f],[%f])", msg.x, msg.y);
-    buffer_.push_back(msg);
+    Vector2f q;
+    q.x = msg.x;
+    q.y = msg.y;
 
-    for(auto pos : buffer_)
+    buffer_.push_back(q);
+
+
+    //For test purposes
+    if((q.x == 0) && (q.y == 0))
     {
-        Vector2f qf;
-        qf.x = pos.x;
-        qf.y = pos.y;
-
-        PlanTrajectory({0,0},qf,100);
+        buffer_.pop_back();
+        ROS_INFO("vMax = [%f],[%f] \naMax = [%f],[%f]",kv.x,kv.y,ka.x,ka.y);
+        PlanTrajectoryFromWaypointsBuffer(100);
     }
 }
 
 TrapezoidalNode::TrapezoidalNode()
 {
-    pubTimer_ = nh_.createTimer(ros::Duration(0.01), &TrapezoidalNode::timerCallback, this);
-    sub_ = nh_.subscribe("Waypoints", 1000, &TrapezoidalNode::subscriberCallback, this); //To be replaced by the service bellow
+    pubTimer_ = nh_.createTimer(ros::Duration(0.1), &TrapezoidalNode::timerCallback, this);
+    sub_ = nh_.subscribe("trapezoidal_planning/Waypoints", 1000, &TrapezoidalNode::subscriberCallback, this); //To be replaced by the service bellow
     srv_ = nh_.advertiseService("Waypoint_serv", &TrapezoidalNode::serviceCallback, this);
-    pub_ = nh_.advertise<sensor_msgs::JointState>("Trajectoire", 1000);
-    
-    nh_.param("vMax1",kv.x,2.0f);
-    nh_.param("vMax2",kv.y,2.0f);
-    nh_.param("aMax1",ka.x,2.0f);
-    nh_.param("aMax2",ka.y,2.0f);
+    pub_ = nh_.advertise<sensor_msgs::JointState>("trapezoidal_planning/Trajectoire", 1000);
+
+    kv = {6.0f,2.0f};
+    ka = {2.0f,2.0f};
+
+    float vMax1, vMax2, aMax1, aMax2;
+
+    if(nh_.getParam("trapezoidal_planning/vMax1",vMax1))
+        kv.x = vMax1;
+    if(nh_.getParam("trapezoidal_planning/vMax2",vMax2))
+        kv.y = vMax2;
+    if(nh_.getParam("trapezoidal_planning/aMax1",aMax1))
+        ka.x = aMax1;
+    if(nh_.getParam("trapezoidal_planning/aMax2",aMax2))
+        ka.y = aMax2;
+
+    Vector2f initialPose = {0,0};
+    buffer_.push_back(initialPose);
 }
 
 TrapezoidalNode::~TrapezoidalNode()
 {
+
 }
 
 bool TrapezoidalNode::serviceCallback(trapezoidal_planning::WayPoint::Request& req, trapezoidal_planning::WayPoint::Response& res)
@@ -129,7 +145,15 @@ void TrapezoidalNode::PlanTrajectoryFromWaypointsBuffer(float freq)
 	//This method computes the all trajectory given by all the Waypoints in the buffer_, then empty the buffer_ except one position.
 	//This position is then used as a starting point the next time we call this method.
 	
-	
+    if(buffer_.size() > 1)
+    {
+        for(unsigned int i = 0; i < buffer_.size()-1; i++)
+        {
+            PlanTrajectory(buffer_[i],buffer_[i+1],freq);
+        }
+
+        buffer_.erase(buffer_.begin(),buffer_.end()-1);
+    }
 }
 
 int main(int argc, char **argv)

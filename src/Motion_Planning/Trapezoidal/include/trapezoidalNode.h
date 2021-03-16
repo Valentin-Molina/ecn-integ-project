@@ -29,7 +29,7 @@ public:
     bool serviceCallback(trapezoidal_planning::WayPoint::Request& req, trapezoidal_planning::WayPoint::Response& res);
 
 private:
-    std::vector<geometry_msgs::Pose2D> buffer_ ;
+    std::vector<Vector2f> buffer_ ;
     std::vector<sensor_msgs::JointState> currentTrajectory_ ;
     Vector2f kv, ka;
 
