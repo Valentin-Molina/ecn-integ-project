@@ -44,6 +44,8 @@ TrapezoidalNode::TrapezoidalNode(double _freq)
     emittingTimer_ = nh_.createTimer(ros::Duration(1/freq_), &TrapezoidalNode::emittingCallback, this);
     computingTimer_ = nh_.createTimer(ros::Duration(1.0), &TrapezoidalNode::computingCallback, this);
 
+    jointSub_ = nh_.subscribe("joint_states", 1, &TrapezoidalNode::jointSubCallback, this);
+
     srv_ = nh_.advertiseService("Waypoint_serv", &TrapezoidalNode::serviceCallback, this);
     pub_ = nh_.advertise<sensor_msgs::JointState>("Trajectoire", 1000);
 
@@ -65,6 +67,22 @@ TrapezoidalNode::TrapezoidalNode(double _freq)
 
     Vector2f initialPose = {0,0};
     buffer_.push_back(initialPose);
+}
+
+void TrapezoidalNode::jointSubCallback(const sensor_msgs::JointState& msg)
+{
+    int lenMsg = msg.name.size();
+    for(int i(0); i<lenMsg ; i++)
+    {
+        if (msg.name[i] == "arm_hand_joint")
+        {
+            theta1_ = msg.position[i];
+        }
+        else if (msg.name[i] == "hand_finger_joint")
+        {
+            theta2_ = msg.position[i];
+        }
+    }
 }
 
 
@@ -202,6 +220,7 @@ void TrapezoidalNode::PlanTrajectoryFromWaypointsBuffer(float freq)
 	
     if(buffer_.size() > 1)
     {
+
         for(unsigned int i = 0; i < buffer_.size()-1; i++)
         {
             PlanTrajectory(buffer_[i],buffer_[i+1],freq);

@@ -28,6 +28,7 @@ public:
     void PlanTrajectory(const Vector2f& qi, const Vector2f& qf, float freq);
     void PlanTrajectoryFromWaypointsBuffer(float freq);
     void emittingCallback(const ros::TimerEvent&);
+    void jointSubCallback(const sensor_msgs::JointState& );
     bool serviceCallback(trapezoidal_planning::WayPoint::Request& req, trapezoidal_planning::WayPoint::Response& res);
     bool isComputing();
     bool isEmitting();
@@ -37,10 +38,12 @@ private:
     std::vector<Vector2f> buffer_ ;
     std::vector<sensor_msgs::JointState> currentTrajectory_ ;
     Vector2f kv, ka;
+    double theta1_, theta2_ ; //joint state of the robot.
     double freq_ ;
 
     ros::NodeHandle nh_ ;
     ros::Publisher pub_ ;
+    ros::Subscriber jointSub_ ;
     ros::Timer emittingTimer_ ;
     ros::Timer computingTimer_ ;
 
