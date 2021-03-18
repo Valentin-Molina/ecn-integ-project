@@ -1,21 +1,27 @@
 #!/usr/bin/env python
+from __future__ import print_function
 
 import rospy
 import yaml
 import numpy as np #np.dot
+import os.path
 
-from __future__ import print_function
+
 from math import cos, sin
 from sensor_msgs.msg import JointState
-from Kinematic.srv import Kinematic,KinematicResponse
+from gkd_models.srv import Dynamic,DynamicResponse
 
 # load robot parameters :
 	# mi = mass 
 	# li = arm lenght 
 	# Izi = z axis inertia
 	# ci = arm joint to center of mass distance
-	
-with open('~/ros/src/integ_gcd_models_pkg/RobotParam.yml') as f :
+
+ici=__file__
+
+chemin=ici[0:len(ici)-10]+'RobotParam.yml'
+
+with open(chemin) as f :
 	yaml_dict = yaml.safe_load(f)
 	l1 = yaml_dict.get("l1")
 	l2 = yaml_dict.get("l2")
@@ -26,6 +32,7 @@ with open('~/ros/src/integ_gcd_models_pkg/RobotParam.yml') as f :
 	Iz2 = yaml_dict.get("Iz2")
 	c1 = yaml_dict.get("c1")
 	c2 = yaml_dict.get("c2")
+	g = yaml_dict.get("g")
 
 
 def handle_Dynamic(req):
@@ -39,7 +46,7 @@ def handle_Dynamic(req):
 	Z1=Iz2+m2*c2**2
 	Z2=m2*l2*c2
 	Z3=m2*l1*c2
-	Z4=Iz1+m1*r1**2
+	Z4=Iz1+m1*c1**2
 	Z5=m2*l1**2
 	Z6=m2*l1*(2*c2-l2)
 	Z7=m2*l1*l2
@@ -56,8 +63,7 @@ def handle_Dynamic(req):
 	G=[[-Z9*cos(theta[0]+theta[1])],[-Z9*cos(theta[0]+theta[1])+Z10*cos(theta[0])]]
 	
 	output.effort=np.dot(D,req.input.effort)+np.dot(C,theta_d)+G
-	
-    return DynamicResponse(output)
+	return DynamicResponse(output)
 
 def Dynamic_server():
     rospy.init_node('Dynamic_server')
