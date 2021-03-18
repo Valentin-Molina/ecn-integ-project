@@ -32,6 +32,7 @@ with open(chemin) as f :
 	Iz2 = yaml_dict.get("Iz2")
 	c1 = yaml_dict.get("c1")
 	c2 = yaml_dict.get("c2")
+	g = yaml_dict.get("g")
 
 
 def handle_Dynamic(req):
