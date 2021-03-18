@@ -7,6 +7,7 @@ find_package(
     std_msgs
     sensor_msgs
     message_generation
+    GKD_models
     )
 
 # Si jamais on a besoin d'un message personnalise    

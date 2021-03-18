@@ -16,12 +16,10 @@ from gkd_models.srv import Dynamic,DynamicResponse
 	# li = arm lenght 
 	# Izi = z axis inertia
 	# ci = arm joint to center of mass distance
+	
+path=os.path.dirname(__file__)
 
-ici=__file__
-
-chemin=ici[0:len(ici)-10]+'RobotParam.yml'
-
-with open(chemin) as f :
+with open(os.path.join(path,'RobotParam.yml')) as f :
 	yaml_dict = yaml.safe_load(f)
 	l1 = yaml_dict.get("l1")
 	l2 = yaml_dict.get("l2")
@@ -39,8 +37,8 @@ def handle_Dynamic(req):
 	
 	# recover joint positions, velocities and acceleration from request
 	theta = req.input.position
-	theta_d=req.input.velocity
-	theta_d_d=req.input.effort
+	theta_d = req.input.velocity
+	theta_d_d = req.input.effort
 	
 	# compute intermediate variables
 	Z1=Iz2+m2*c2**2
@@ -56,13 +54,16 @@ def handle_Dynamic(req):
 	
 	# compute final matrixes
 	# T = D.qdotdot + C.qdot + G
-	D=[[Z1-Z2+Z3*cos(theta[1]) , Z1],[Z1+Z4-Z2+Z5+Z6*cos(thetat[1]) , Z1+Z3*cos(theta[1])]]
+	D=[[Z1-Z2+Z3*cos(theta[1]) , Z1],[Z1+Z4-Z2+Z5+Z6*cos(theta[1]) , Z1+Z3*cos(theta[1])]]
 	
-	C=[[-Z3*theta_d[0]*sin(theta[1]) , 0],[(-Z7*theta_d[0]-Z8*theta_d[1])*sin(thetat[1]) , (Z3*theta_d[1]-Z8*theta_d[0])*sin(theta[1])]]
+	C=[[-Z3*theta_d[0]*sin(theta[1]) , 0],[(-Z7*theta_d[0]-Z8*theta_d[1])*sin(theta[1]) , (Z3*theta_d[1]-Z8*theta_d[0])*sin(theta[1])]]
 	
-	G=[[-Z9*cos(theta[0]+theta[1])],[-Z9*cos(theta[0]+theta[1])+Z10*cos(theta[0])]]
+	G=[-Z9*cos(theta[0]+theta[1]),-Z9*cos(theta[0]+theta[1])+Z10*cos(theta[0])]
 	
-	output.effort=np.dot(D,req.input.effort)+np.dot(C,theta_d)+G
+	output=JointState()
+	print(np.dot(D,req.input.effort)+np.dot(C,theta_d)+G)
+	output.effort=(np.dot(D,req.input.effort)+np.dot(C,theta_d)+G).tolist()
+	
 	return DynamicResponse(output)
 
 def Dynamic_server():

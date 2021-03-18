@@ -5,7 +5,7 @@
 #include <sstream>
 #include <iostream>
 
-//#include service
+#include <GKD_models/Dynamic.h>
 
 #include <sensor_msgs/JointState.h>
 //inutile mais peut servir pour creer nos propres messages
@@ -19,8 +19,8 @@ sensor_msgs::JointState etat;
 sensor_msgs::JointState traj;
 sensor_msgs::JointState commande;
 sensor_msgs::JointState jt_state;
-//name_package::srv::name_service::Request req;
-//ServiceNodeSync<name_service> Dyn_node;
+GKD_models::Dynamic srv;
+
 
 void etatCallback(const sensor_msgs::JointStatePtr & msg)
 {
@@ -47,6 +47,11 @@ int main (int argc, char** argv)
     // publisher
     ros::Publisher couple_pub = nh.advertise<sensor_msgs::JointState>("/CommandeMoteur", 10);
 
+    // service
+    ros::ServiceClient client = nh.serviceClient<GKD_models::Dynamic>("Dynamic");
+
+
+
     float Kp0=1, Kp1=1, Kd0=1, Kd1=1, Ki0=1, Ki1=1, Te=0.01;
     float integrale[2] = {};
     float err[2] = {}, err_p[2] = {};
@@ -59,9 +64,12 @@ int main (int argc, char** argv)
 
     traj.position.resize(2);
     traj.velocity.resize(2);
+    traj.effort.resize(2);
     
     commande.name.resize(2);
     commande.effort.resize(2);
+    commande.position.resize(2);
+    commande.velocity.resize(2);
 
     jt_state.name.resize(2);
     jt_state.position.resize(2);
@@ -69,12 +77,14 @@ int main (int argc, char** argv)
     jt_state.effort.resize(2);
 
     while (ros::ok())
-    {
-
+    {        
         err[0] = traj.position[0] - etat.position[0];
         err_p[0] = traj.velocity[0] - etat.velocity[0];
+        
         integrale[0] += err[0]*Te;
+        
         jt_state.effort[0] = Kp0*err[0] + Kd0*err_p[0] + Ki0*integrale[0] + traj.effort[0];
+        
         jt_state.name[0] = "q1";
 
 
@@ -84,24 +94,35 @@ int main (int argc, char** argv)
         jt_state.effort[1] = Kp1*err[1] + Kd1*err_p[1] + Ki1*integrale[1] + traj.effort[1];
         jt_state.name[1] = "q2";
 
-
         jt_state.position = etat.position;
         jt_state.velocity = etat.velocity;
 
 
-        //req.push_back(jt_state);
 
-        //auto response = Dyn_node.sendRequest(req);
+        //cout<<"traj position q1: "<<traj.position[0]<<endl;
+        //cout<<"traj position q2: "<<traj.position[1]<<endl;
+        //cout<<"traj velocity q1: "<<traj.velocity[0]<<endl;
+        //cout<<"traj velocity q2: "<<traj.velocity[1]<<endl;
+        //cout<<"traj acceleration q1: "<<traj.effort[0]<<endl;
+        //cout<<"traj acceleration q2: "<<traj.effort[1]<<endl;
+        //cout<<"effort commande q0: "<<jt_state.effort[0]<<endl;
+
+        //cout<<"effort commande q1: "<<jt_state.effort[1]<<endl;
+
+        srv.request.input = jt_state;
+        client.call(srv);
+        commande = srv.response.output;
 
 
-        //commande.effort = response.effort;
+        //cout<<"effort q1= "<<commande.effort[0]<<endl;
+        //cout<<"effort q2= "<<commande.effort[1]<<endl;
+        //cout<<"position q1= "<<srv.response.output.position[0]<<endl;
+        //cout<<"position q2= "<<commande.position[1]<<endl;
+        //cout<<"vitesse q1= "<<srv.response.output.velocity[0]<<endl;
+        //cout<<"vitesse q2= "<<commande.velocity[1]<<endl;
+
         commande.name[0] = "q1";
         commande.name[1] = "q2";
-
-
-        
-        cout<<"error position q1: "<<err[0]<<endl;
-        cout<<"error position q2: "<<err[1]<<endl;
         
         
         
