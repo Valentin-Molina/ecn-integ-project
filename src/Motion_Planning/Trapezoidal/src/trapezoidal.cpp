@@ -14,7 +14,7 @@ TrapezoidalNode::TrapezoidalNode()
     computingTimer_ = nh_.createTimer(ros::Duration(1.0), &TrapezoidalNode::computingCallback, this);
 
     srv_ = nh_.advertiseService("Waypoint_serv", &TrapezoidalNode::serviceCallback, this);
-    pub_ = nh_.advertise<sensor_msgs::JointState>("trapezoidal_planning/Trajectoire", 1000);
+    pub_ = nh_.advertise<sensor_msgs::JointState>("Trajectoire", 1000);
 
     kv = {6.0f,2.0f};
     ka = {2.0f,2.0f};
@@ -45,7 +45,7 @@ TrapezoidalNode::TrapezoidalNode(double _freq)
     computingTimer_ = nh_.createTimer(ros::Duration(1.0), &TrapezoidalNode::computingCallback, this);
 
     srv_ = nh_.advertiseService("Waypoint_serv", &TrapezoidalNode::serviceCallback, this);
-    pub_ = nh_.advertise<sensor_msgs::JointState>("trapezoidal_planning/Trajectoire", 1000);
+    pub_ = nh_.advertise<sensor_msgs::JointState>("Trajectoire", 1000);
 
     kv = {6.0f,2.0f};
     ka = {2.0f,2.0f};
