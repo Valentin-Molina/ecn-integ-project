@@ -1,16 +1,20 @@
 #!/usr/bin/env python
+from __future__ import print_function
 
 import rospy
 import yaml
 
-from __future__ import print_function
+
 from math import cos, sin
 from sensor_msgs.msg import JointState
-from Kinematic.srv import Kinematic,KinematicResponse
+from gkd_models.srv import Kinematic,KinematicResponse
 
 
 # load robot parameters from yaml file
-with open('~/ros/src/integ_gcd_models_pkg/RobotParam.yml') as f :
+ici=__file__
+
+chemin=ici[0:len(ici)-12]+'RobotParam.yml'
+with open(chemin) as f :
 	yaml_dict = yaml.safe_load(f)
 	l1 = yaml_dict.get("l1")
 	l2 = yaml_dict.get("l2")
@@ -22,10 +26,9 @@ def handle_Kinematic(req):
 	theta_dot=req.input.velocity
 	
 	# compute end effector velocity
-    velocity[0]  = -req.l1*theta_dot[0]*sin(theta[0])-req.l2*(theta_dot[0]+theta_dot[1])*sin(theta[0]+theta[1])
-    velocity[1]  = req.l1*theta_dot[0]*cos(theta[0])+req.l2*(theta_dot[0]+theta_dot[1])*cos(theta[0]+theta[1])
-
-    return KinematicResponse(velocity)
+	velocity[0]  = -req.l1*theta_dot[0]*sin(theta[0])-req.l2*(theta_dot[0]+theta_dot[1])*sin(theta[0]+theta[1])
+	velocity[1]  = req.l1*theta_dot[0]*cos(theta[0])+req.l2*(theta_dot[0]+theta_dot[1])*cos(theta[0]+theta[1])
+	return KinematicResponse(velocity)
 
 def Kinematic_server():
     rospy.init_node('Kinematic_server')

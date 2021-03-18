@@ -2,13 +2,16 @@
 
 import rospy
 from sensor_msgs.msg import JointState
-from Kinematic.srv import Kinematic,KinematicResponse
+from gkd_models.srv import Kinematic,KinematicResponse
 
 def test_callback():
 	S = JointState()
-	S.name[0] = 'fake_joint'
+	S.name[0] = 'fake_joint1'
 	S.position[0] = 2
 	S.velocity[0] = 1
+	S.name[1] = 'fake_joint2'
+	S.position[1] = 2
+	S.velocity[1] = 1
 
 	rospy.wait_for_service('Kinematic')
 	dynamic = rospy.ServiceProxy('Kinematic', KinematicResponse)
