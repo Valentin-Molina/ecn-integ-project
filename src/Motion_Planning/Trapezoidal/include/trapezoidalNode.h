@@ -21,6 +21,7 @@ class TrapezoidalNode
 {
 public:
     TrapezoidalNode();
+    TrapezoidalNode(double);
     ~TrapezoidalNode();
     void subscriberCallback(const geometry_msgs::Pose2D& msg);
     void computingCallback(const ros::TimerEvent&);
@@ -39,8 +40,7 @@ private:
     double freq_ ;
 
     ros::NodeHandle nh_ ;
-    ros::Subscriber sub_ ;
-    ros::Publisher pub_ ; // To be deleted qnd replaced by the service bellow
+    ros::Publisher pub_ ;
     ros::Timer emittingTimer_ ;
     ros::Timer computingTimer_ ;
 

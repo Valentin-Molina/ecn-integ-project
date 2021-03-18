@@ -6,31 +6,13 @@
 #include <trapezoidal_planning/WayPoint.h>
 
 
-void TrapezoidalNode::subscriberCallback(const geometry_msgs::Pose2D& msg)
-{
-    Vector2f q;
-    q.x = msg.x;
-    q.y = msg.y;
-
-    buffer_.push_back(q);
-
-
-    //For test purposes
-    if((q.x == 0) && (q.y == 0))
-    {
-        buffer_.pop_back();
-        ROS_INFO("vMax = [%f],[%f] \naMax = [%f],[%f]",kv.x,kv.y,ka.x,ka.y);
-        PlanTrajectoryFromWaypointsBuffer(100);
-    }
-}
-
 TrapezoidalNode::TrapezoidalNode()
 {
     freq_ = 1000.0;
 
     emittingTimer_ = nh_.createTimer(ros::Duration(1/freq_), &TrapezoidalNode::emittingCallback, this);
     computingTimer_ = nh_.createTimer(ros::Duration(1.0), &TrapezoidalNode::computingCallback, this);
-    sub_ = nh_.subscribe("trapezoidal_planning/Waypoints", 1000, &TrapezoidalNode::subscriberCallback, this); //To be replaced by the service bellow
+
     srv_ = nh_.advertiseService("Waypoint_serv", &TrapezoidalNode::serviceCallback, this);
     pub_ = nh_.advertise<sensor_msgs::JointState>("trapezoidal_planning/Trajectoire", 1000);
 
@@ -53,6 +35,38 @@ TrapezoidalNode::TrapezoidalNode()
     Vector2f initialPose = {0,0};
     buffer_.push_back(initialPose);
 }
+
+
+TrapezoidalNode::TrapezoidalNode(double _freq)
+{
+    freq_ = _freq;
+
+    emittingTimer_ = nh_.createTimer(ros::Duration(1/freq_), &TrapezoidalNode::emittingCallback, this);
+    computingTimer_ = nh_.createTimer(ros::Duration(1.0), &TrapezoidalNode::computingCallback, this);
+
+    srv_ = nh_.advertiseService("Waypoint_serv", &TrapezoidalNode::serviceCallback, this);
+    pub_ = nh_.advertise<sensor_msgs::JointState>("trapezoidal_planning/Trajectoire", 1000);
+
+    kv = {6.0f,2.0f};
+    ka = {2.0f,2.0f};
+
+
+
+    float vMax1, vMax2, aMax1, aMax2;
+
+    if(nh_.getParam("trapezoidal_planning/vMax1",vMax1))
+        kv.x = vMax1;
+    if(nh_.getParam("trapezoidal_planning/vMax2",vMax2))
+        kv.y = vMax2;
+    if(nh_.getParam("trapezoidal_planning/aMax1",aMax1))
+        ka.x = aMax1;
+    if(nh_.getParam("trapezoidal_planning/aMax2",aMax2))
+        ka.y = aMax2;
+
+    Vector2f initialPose = {0,0};
+    buffer_.push_back(initialPose);
+}
+
 
 TrapezoidalNode::~TrapezoidalNode()
 {
@@ -103,6 +117,7 @@ void TrapezoidalNode::emittingCallback(const ros::TimerEvent& event)
 {
     if(isEmitting())
     {
+        //ROS_INFO("vMax = [%f],[%f] \naMax = [%f],[%f]",kv.x,kv.y,ka.x,ka.y);
         pub_.publish(currentTrajectory_[0]);
         currentTrajectory_.erase(currentTrajectory_.begin());
     }
@@ -202,7 +217,7 @@ int main(int argc, char **argv)
   ros::init(argc, argv, "trapezoidal_planning");
 
 
-  TrapezoidalNode TrapezoidalNode;
+  TrapezoidalNode TrapezoidalNode(1000.0);
   
   ros::spin();
 
