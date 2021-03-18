@@ -1,16 +1,20 @@
 #!/usr/bin/env python
-
+from __future__ import print_function
 import rospy
 import yaml
 
-from __future__ import print_function
+
 from math import cos, sin, atan2
 from sensor_msgs.msg import JointState
-from Kinematic.srv import Kinematic,KinematicResponse
+from gkd_models.srv import MGI,MGIResponse
 
 
 # load robot parameters from yaml file
-with open('~/ros/src/integ_gcd_models_pkg/RobotParam.yml') as f :
+ici=__file__
+
+chemin=ici[0:len(ici)-6]+'RobotParam.yml'
+
+with open(chemin) as f :
 	yaml_dict = yaml.safe_load(f)
 	l1 = yaml_dict.get("l1")
 	l2 = yaml_dict.get("l2")
@@ -31,9 +35,9 @@ def handle_MGI(req):
 	c1=((l1+l2*c2)*x+l2*s2*y)/(x**2+y**2)
 	
 	output.position[1]=atan2(s2,c2)
-	output.position[0]=atan2(s1,c1)	
+	output.position[0]=atan2(s1,c1)
 	
-    return MGIResponse(output)
+	return MGIResponse(output)
 
 def MGI_server():
     rospy.init_node('MGI_server')
