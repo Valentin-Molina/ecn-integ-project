@@ -63,8 +63,6 @@
 
   </xacro:macro>
 
-
-
   <!-- Generates child joint of parent -->
   <xacro:macro name="arm_joint" params="child parent dist:=0 ">
 
@@ -103,7 +101,6 @@
         <material name="gray"/>
       </visual>
     </link>
-
 
   </xacro:macro>
 
