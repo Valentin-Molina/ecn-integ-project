@@ -3,6 +3,7 @@
 #include "geometry_msgs/Pose2D.h"
 #include "../include/trapezoidalNode.h"
 #include <stdlib.h>
+#include <trapezoidal_planning/WayPoint.h>
 
 
 void TrapezoidalNode::subscriberCallback(const geometry_msgs::Pose2D& msg)
@@ -25,13 +26,18 @@ void TrapezoidalNode::subscriberCallback(const geometry_msgs::Pose2D& msg)
 
 TrapezoidalNode::TrapezoidalNode()
 {
-    pubTimer_ = nh_.createTimer(ros::Duration(0.1), &TrapezoidalNode::timerCallback, this);
+    freq_ = 1000.0;
+
+    emittingTimer_ = nh_.createTimer(ros::Duration(1/freq_), &TrapezoidalNode::emittingCallback, this);
+    computingTimer_ = nh_.createTimer(ros::Duration(1.0), &TrapezoidalNode::computingCallback, this);
     sub_ = nh_.subscribe("trapezoidal_planning/Waypoints", 1000, &TrapezoidalNode::subscriberCallback, this); //To be replaced by the service bellow
     srv_ = nh_.advertiseService("Waypoint_serv", &TrapezoidalNode::serviceCallback, this);
     pub_ = nh_.advertise<sensor_msgs::JointState>("trapezoidal_planning/Trajectoire", 1000);
 
     kv = {6.0f,2.0f};
     ka = {2.0f,2.0f};
+
+
 
     float vMax1, vMax2, aMax1, aMax2;
 
@@ -55,24 +61,58 @@ TrapezoidalNode::~TrapezoidalNode()
 
 bool TrapezoidalNode::serviceCallback(trapezoidal_planning::WayPoint::Request& req, trapezoidal_planning::WayPoint::Response& res)
 {
-    if(currentTrajectory_.empty())
+    if(isFree())
     {
         ROS_INFO("New trajectory added to the buffer. Computation will start...");
+        res.ack = true ;
+        int n = req.waypoints.size() ;
+        Vector2f q;
+        for(int i(0); i < n; i++)
+        {
+            q.x = req.waypoints[i].x ;
+            q.y = req.waypoints[i].y ;
+            buffer_.push_back(q) ;
+        }
         return true ;
     }
     else
     {
-        ROS_INFO("The current trajectory isn't finished.");
+        ROS_INFO("ERRROR : The current trajectory isn't finished.");
+        res.ack = false ;
         return false ;
     }
 }
 
-void TrapezoidalNode::timerCallback(const ros::TimerEvent& event)
+bool TrapezoidalNode::isComputing()
 {
-    if(!currentTrajectory_.empty())
+    return !buffer_.empty();
+}
+
+bool TrapezoidalNode::isEmitting()
+{
+    return !currentTrajectory_.empty();
+}
+
+bool TrapezoidalNode::isFree()
+{
+    //return (!isEmitting() && !isComputing()); pb with the point (0, 0) at start
+    return (!isEmitting());
+}
+
+void TrapezoidalNode::emittingCallback(const ros::TimerEvent& event)
+{
+    if(isEmitting())
     {
         pub_.publish(currentTrajectory_[0]);
         currentTrajectory_.erase(currentTrajectory_.begin());
+    }
+}
+
+void TrapezoidalNode::computingCallback(const ros::TimerEvent& event)
+{
+    if(isComputing())
+    {
+        PlanTrajectoryFromWaypointsBuffer(freq_);
     }
 }
 

@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>GKD_models</name>
+  <name>gkd_models</name>
   <version>0.0.0</version>
-  <description>The GKD_models package</description>
+  <description>The gkd_models package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
