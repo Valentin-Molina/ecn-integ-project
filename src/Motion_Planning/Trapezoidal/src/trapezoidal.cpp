@@ -26,13 +26,18 @@ void TrapezoidalNode::subscriberCallback(const geometry_msgs::Pose2D& msg)
 
 TrapezoidalNode::TrapezoidalNode()
 {
-    pubTimer_ = nh_.createTimer(ros::Duration(0.1), &TrapezoidalNode::timerCallback, this);
+    freq_ = 1000.0;
+
+    emittingTimer_ = nh_.createTimer(ros::Duration(1/freq_), &TrapezoidalNode::emittingCallback, this);
+    computingTimer_ = nh_.createTimer(ros::Duration(1.0), &TrapezoidalNode::computingCallback, this);
     sub_ = nh_.subscribe("trapezoidal_planning/Waypoints", 1000, &TrapezoidalNode::subscriberCallback, this); //To be replaced by the service bellow
     srv_ = nh_.advertiseService("Waypoint_serv", &TrapezoidalNode::serviceCallback, this);
     pub_ = nh_.advertise<sensor_msgs::JointState>("trapezoidal_planning/Trajectoire", 1000);
 
     kv = {6.0f,2.0f};
     ka = {2.0f,2.0f};
+
+
 
     float vMax1, vMax2, aMax1, aMax2;
 
@@ -94,12 +99,20 @@ bool TrapezoidalNode::isFree()
     return (!isEmitting());
 }
 
-void TrapezoidalNode::timerCallback(const ros::TimerEvent& event)
+void TrapezoidalNode::emittingCallback(const ros::TimerEvent& event)
 {
-    if(!currentTrajectory_.empty())
+    if(isEmitting())
     {
         pub_.publish(currentTrajectory_[0]);
         currentTrajectory_.erase(currentTrajectory_.begin());
+    }
+}
+
+void TrapezoidalNode::computingCallback(const ros::TimerEvent& event)
+{
+    if(isComputing())
+    {
+        PlanTrajectoryFromWaypointsBuffer(freq_);
     }
 }
 

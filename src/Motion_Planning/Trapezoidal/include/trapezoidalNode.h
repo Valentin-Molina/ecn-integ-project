@@ -23,9 +23,10 @@ public:
     TrapezoidalNode();
     ~TrapezoidalNode();
     void subscriberCallback(const geometry_msgs::Pose2D& msg);
+    void computingCallback(const ros::TimerEvent&);
     void PlanTrajectory(const Vector2f& qi, const Vector2f& qf, float freq);
     void PlanTrajectoryFromWaypointsBuffer(float freq);
-    void timerCallback(const ros::TimerEvent&);
+    void emittingCallback(const ros::TimerEvent&);
     bool serviceCallback(trapezoidal_planning::WayPoint::Request& req, trapezoidal_planning::WayPoint::Response& res);
     bool isComputing();
     bool isEmitting();
@@ -35,11 +36,13 @@ private:
     std::vector<Vector2f> buffer_ ;
     std::vector<sensor_msgs::JointState> currentTrajectory_ ;
     Vector2f kv, ka;
+    double freq_ ;
 
     ros::NodeHandle nh_ ;
     ros::Subscriber sub_ ;
     ros::Publisher pub_ ; // To be deleted qnd replaced by the service bellow
-    ros::Timer pubTimer_ ;
+    ros::Timer emittingTimer_ ;
+    ros::Timer computingTimer_ ;
 
     // Service variables :
     ros::ServiceServer srv_ ;
