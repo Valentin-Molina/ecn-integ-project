@@ -27,6 +27,9 @@ public:
     void PlanTrajectoryFromWaypointsBuffer(float freq);
     void timerCallback(const ros::TimerEvent&);
     bool serviceCallback(trapezoidal_planning::WayPoint::Request& req, trapezoidal_planning::WayPoint::Response& res);
+    bool isComputing();
+    bool isEmitting();
+    bool isFree();
 
 private:
     std::vector<Vector2f> buffer_ ;

@@ -3,6 +3,7 @@
 #include "geometry_msgs/Pose2D.h"
 #include "../include/trapezoidalNode.h"
 #include <stdlib.h>
+#include <trapezoidal_planning/WayPoint.h>
 
 
 void TrapezoidalNode::subscriberCallback(const geometry_msgs::Pose2D& msg)
@@ -55,16 +56,42 @@ TrapezoidalNode::~TrapezoidalNode()
 
 bool TrapezoidalNode::serviceCallback(trapezoidal_planning::WayPoint::Request& req, trapezoidal_planning::WayPoint::Response& res)
 {
-    if(currentTrajectory_.empty())
+    if(isFree())
     {
         ROS_INFO("New trajectory added to the buffer. Computation will start...");
+        res.ack = true ;
+        int n = req.waypoints.size() ;
+        Vector2f q;
+        for(int i(0); i < n; i++)
+        {
+            q.x = req.waypoints[i].x ;
+            q.y = req.waypoints[i].y ;
+            buffer_.push_back(q) ;
+        }
         return true ;
     }
     else
     {
-        ROS_INFO("The current trajectory isn't finished.");
+        ROS_INFO("ERRROR : The current trajectory isn't finished.");
+        res.ack = false ;
         return false ;
     }
+}
+
+bool TrapezoidalNode::isComputing()
+{
+    return !buffer_.empty();
+}
+
+bool TrapezoidalNode::isEmitting()
+{
+    return !currentTrajectory_.empty();
+}
+
+bool TrapezoidalNode::isFree()
+{
+    //return (!isEmitting() && !isComputing()); pb with the point (0, 0) at start
+    return (!isEmitting());
 }
 
 void TrapezoidalNode::timerCallback(const ros::TimerEvent& event)
