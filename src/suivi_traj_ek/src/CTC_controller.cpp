@@ -5,7 +5,7 @@
 #include <sstream>
 #include <iostream>
 
-#include <GKD_models/Dynamic.h>
+#include <gkd_models/Dynamic.h>
 
 #include <sensor_msgs/JointState.h>
 //inutile mais peut servir pour creer nos propres messages
@@ -19,7 +19,7 @@ sensor_msgs::JointState etat;
 sensor_msgs::JointState traj;
 sensor_msgs::JointState commande;
 sensor_msgs::JointState jt_state;
-GKD_models::Dynamic srv;
+gkd_models::Dynamic srv;
 
 
 void etatCallback(const sensor_msgs::JointStatePtr & msg)
@@ -48,7 +48,7 @@ int main (int argc, char** argv)
     ros::Publisher couple_pub = nh.advertise<sensor_msgs::JointState>("/CommandeMoteur", 10);
 
     // service
-    ros::ServiceClient client = nh.serviceClient<GKD_models::Dynamic>("Dynamic");
+    ros::ServiceClient client = nh.serviceClient<gkd_models::Dynamic>("Dynamic");
 
 
 
@@ -109,21 +109,21 @@ int main (int argc, char** argv)
 
         //cout<<"effort commande q1: "<<jt_state.effort[1]<<endl;
 
-        srv.request.input = jt_state;
-        client.call(srv);
-        commande = srv.response.output;
+        if (client.exists())
+        {
+            srv.request.input = jt_state;
+            if(client.call(srv))
+            {
+                commande = srv.response.output;
 
 
-        //cout<<"effort q1= "<<commande.effort[0]<<endl;
-        //cout<<"effort q2= "<<commande.effort[1]<<endl;
-        //cout<<"position q1= "<<srv.response.output.position[0]<<endl;
-        //cout<<"position q2= "<<commande.position[1]<<endl;
-        //cout<<"vitesse q1= "<<srv.response.output.velocity[0]<<endl;
-        //cout<<"vitesse q2= "<<commande.velocity[1]<<endl;
+                cout<<"effort q1= "<<commande.effort[0]<<endl;
+                cout<<"effort q2= "<<commande.effort[1]<<endl;
 
-        commande.name[0] = "q1";
-        commande.name[1] = "q2";
-        
+                commande.name[0] = "q1";
+                commande.name[1] = "q2";
+            }
+        }
         
         
         // publish setpoint
