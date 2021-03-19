@@ -32,6 +32,7 @@ TrapezoidalNode::TrapezoidalNode()
     if(nh_.getParam("trapezoidal_planning/aMax2",aMax2))
         ka.y = aMax2;
 
+    // Should be removed when using the joint states.
     Vector2f initialPose = {0,0};
     buffer_.push_back(initialPose);
 }
@@ -64,9 +65,6 @@ TrapezoidalNode::TrapezoidalNode(double _freq)
         ka.x = aMax1;
     if(nh_.getParam("trapezoidal_planning/aMax2",aMax2))
         ka.y = aMax2;
-
-    Vector2f initialPose = {0,0};
-    buffer_.push_back(initialPose);
 }
 
 void TrapezoidalNode::jointSubCallback(const sensor_msgs::JointState& msg)
@@ -135,7 +133,6 @@ void TrapezoidalNode::emittingCallback(const ros::TimerEvent& event)
 {
     if(isEmitting())
     {
-        //ROS_INFO("vMax = [%f],[%f] \naMax = [%f],[%f]",kv.x,kv.y,ka.x,ka.y);
         pub_.publish(currentTrajectory_[0]);
         currentTrajectory_.erase(currentTrajectory_.begin());
     }
@@ -170,6 +167,8 @@ void TrapezoidalNode::PlanTrajectory(const Vector2f& qi, const Vector2f& qf, flo
 
     float tf = lambda1*kv.x/(mu1*ka.x) + std::abs(D.x)/(lambda1*kv.x);
     float tau = lambda1*kv.x/(mu1*ka.x);
+
+    ROS_INFO("The trajectory from (%f, %f) to (%f, %f) will take %f secondes.", qi.x, qi.y, qf.x, qf.y, tf);
 
     float t = 0;
     float dt = 1/freq;
@@ -220,9 +219,14 @@ void TrapezoidalNode::PlanTrajectoryFromWaypointsBuffer(float freq)
 	
     if(buffer_.size() > 1)
     {
+        Vector2f q; q.x = theta1_ ; q.y = theta2_ ;
+        buffer_.insert(buffer_.begin(),q); // Add the current position at the beginning of the buffer.
+
+        ROS_INFO("vMax = [%f],[%f] \naMax = [%f],[%f]",kv.x,kv.y,ka.x,ka.y);
 
         for(unsigned int i = 0; i < buffer_.size()-1; i++)
         {
+            ROS_INFO("Computing trajectory from the point (%f, %f) to the point (%f, %f)...",buffer_[i].x, buffer_[i].y, buffer_[i+1].x, buffer_[i+1].y);
             PlanTrajectory(buffer_[i],buffer_[i+1],freq);
         }
 
