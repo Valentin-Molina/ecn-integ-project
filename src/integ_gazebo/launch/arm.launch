@@ -25,7 +25,7 @@
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
     args="-urdf -model integ -param robot_description"/>
 
-   <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
+   <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF target -->
   <node name="target_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
     args="-urdf -z 1 -x 1 -y 1 -model cible_simple -file $(find integ_description)/urdf/cible.urdf"/>
     
