@@ -13,6 +13,8 @@ TrapezoidalNode::TrapezoidalNode()
     emittingTimer_ = nh_.createTimer(ros::Duration(1/freq_), &TrapezoidalNode::emittingCallback, this);
     computingTimer_ = nh_.createTimer(ros::Duration(1.0), &TrapezoidalNode::computingCallback, this);
 
+    jointSub_ = nh_.subscribe("joint_states", 1, &TrapezoidalNode::jointSubCallback, this);
+
     srv_ = nh_.advertiseService("Waypoint_serv", &TrapezoidalNode::serviceCallback, this);
     pub_ = nh_.advertise<sensor_msgs::JointState>("Trajectoire", 1000);
 
