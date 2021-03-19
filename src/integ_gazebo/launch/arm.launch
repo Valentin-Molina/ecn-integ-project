@@ -29,4 +29,17 @@
   <node name="target_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
     args="-urdf -z 1 -x 1 -y 1 -model cible_simple -file $(find integ_description)/urdf/cible.urdf"/>
     
+    <!-- Run controllers (http://gazebosim.org/tutorials/?tut=ros_control) -->
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find integ_gazebo)/params/arm_control.yaml" command="load"/>
+
+  <!-- load the controllers -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+    output="screen" args="hand_position_controller finger_position_controller joint_state_controller"/>
+  
+<!-- Also robot_state_publisher -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+
+  
+    
 </launch>
