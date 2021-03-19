@@ -153,9 +153,9 @@
   </gazebo>
 
  
-  <!-- Camera -->
+  <!-- Camera not well defined-> go to 0, 0, 0 -->
    <link name="camera_link">
-    <collision>
+   <!-- <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
     <box size="${camera_link} ${camera_link} ${camera_link}"/>
@@ -165,7 +165,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-    <box size="${camera_link} ${camera_link} ${camera_link}"/>
+        <box size="${camera_link} ${camera_link} ${camera_link}"/>
       </geometry>
       <material name="red"/>
     </visual>
@@ -174,12 +174,12 @@
       <mass value="1e-5" />
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
-    </inertial>
+    </inertial>-->
   </link>
   
    <joint name="camera_joint" type="fixed">
     <axis xyz="0 1 0" />
-    <origin xyz="${camera_link} 0 ${height3 - axel_offset*2}" rpy="0 0 0"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
     <parent link="finger"/>
     <child link="camera_link"/>
   </joint>
