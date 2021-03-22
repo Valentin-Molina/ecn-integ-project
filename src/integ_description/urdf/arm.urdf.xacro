@@ -80,8 +80,8 @@
       <parent link="${parent}"/>
       <child link="${child}"/>
       <axis xyz="1 0 0"/>
-      <limit effort="40.0"
-             velocity="1.0"
+      <limit effort="100.0"
+             velocity="10.0"
              lower="${-PI}"
              upper="${PI}"/>
     </joint>
@@ -163,6 +163,7 @@
 
  
   <!-- Camera not well defined-> go to 0, 0, 0 -->
+  
    <link name="camera_link">
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -174,16 +175,19 @@
   </link>
   
    <joint name="camera_joint" type="fixed">
-    <origin xyz="0 0 ${finger_length}" rpy="0 0 0"/>
+    <origin xyz="0 0 ${finger_length}" rpy="${-PI/2} 0 ${-PI/2}"/>
     <parent link="finger"/>
     <child link="camera_link"/>
   </joint>
-  
+    
    <!-- camera -->
   <gazebo reference="camera_link">
-    <sensor type="camera" name="camera1">
+    <sensor type="camera" name="camera1">      
       <update_rate>30.0</update_rate>
       <camera name="head">
+        <!-- Gazebo uses X as the optical axis -->
+          <visualize>true</visualize>
+          <pose>0 0 0 0 ${-PI/2} ${PI/2}</pose>
         <horizontal_fov>1.3962634</horizontal_fov>
         <image>
           <width>800</width>
