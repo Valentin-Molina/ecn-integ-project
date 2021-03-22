@@ -34,8 +34,8 @@ def handle_MGI(req):
 	c1=((l1+l2*c2)*x+l2*s2*y)/(x**2+y**2)
 	
 	output=JointState()
-	output.position.append(atan2(s2,c2))
 	output.position.append(atan2(s1,c1))
+	output.position.append(atan2(s2,c2))
 	
 	return MGIResponse(output)
 

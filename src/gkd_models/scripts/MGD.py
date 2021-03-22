@@ -9,12 +9,6 @@ import rospy
 import numpy as np
 import os
 
-#Paramètres du robot :
-# mi = masse i
-# li = longueur du bras i
-# Izi = Inertie selon l'axe z
-# ci = longueur entre la liaison et le centre de masse du bras i
-
 
 path=os.path.dirname(__file__)
 
@@ -29,7 +23,7 @@ with open(os.path.join(path,'RobotParam.yml')) as f :
 def handle_MGD(req):
 	theta = req.input.position
 	pos=[0,0]
-	pos[0] = l1*cos(theta[0])+l2*cos(theta[0]+theta[1])
+	pos[0] = l1*cos(theta[0])+l2*cos(theta[0]+theta[1])	
 	pos[1] = l1*sin(theta[0])+l2*sin(theta[0]+theta[1])
 	return MGDResponse(pos)
     

@@ -2,19 +2,21 @@
 
 import rospy
 from sensor_msgs.msg import JointState
-from Kinematic.srv import Kinematic,KinematicResponse
+from gkd_models.srv import *
 
 def test_callback():
 	S = JointState()
-	S.name[0] = 'fake_joint'
-	S.position[0] = 2
-	S.velocity[0] = 1
+	S.name.append('fake_joint1')
+	S.position.append(2)
+	S.name.append('fake_joint2')
+	S.position.append(2)
 
-	rospy.wait_for_service('Kinematic')
-	dynamic = rospy.ServiceProxy('Kinematic', KinematicResponse)
+
+	rospy.wait_for_service('MGD')
+	mgd = rospy.ServiceProxy('MGD', MGD)
 
 	try:
-		resp = Kinematic(S)
+		resp = mgd(S)
 		print(resp)
 	except rospy.ServiceException as exc:
 		print("Service did not process request: " + str(exc))

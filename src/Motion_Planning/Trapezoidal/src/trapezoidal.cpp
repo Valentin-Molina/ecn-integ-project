@@ -8,7 +8,7 @@
 
 TrapezoidalNode::TrapezoidalNode()
 {
-    freq_ = 1000.0;
+    freq_ = 100.0;
 
     emittingTimer_ = nh_.createTimer(ros::Duration(1/freq_), &TrapezoidalNode::emittingCallback, this);
     computingTimer_ = nh_.createTimer(ros::Duration(1.0), &TrapezoidalNode::computingCallback, this);
@@ -242,7 +242,7 @@ int main(int argc, char **argv)
   ros::init(argc, argv, "trapezoidal_planning");
 
 
-  TrapezoidalNode TrapezoidalNode(1000.0);
+  TrapezoidalNode TrapezoidalNode(100.0);
   
   ros::spin();
 
