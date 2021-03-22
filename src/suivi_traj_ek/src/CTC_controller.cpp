@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include <gkd_models/Dynamic.h>
+#include <std_msgs/Float64.h>
 
 #include <sensor_msgs/JointState.h>
 //inutile mais peut servir pour creer nos propres messages
@@ -18,6 +19,7 @@ using namespace std;
 sensor_msgs::JointState etat;
 sensor_msgs::JointState traj;
 sensor_msgs::JointState commande;
+std_msgs::Float64 commandeq1, commandeq2;
 sensor_msgs::JointState jt_state;
 gkd_models::Dynamic srv;
 
@@ -39,13 +41,16 @@ int main (int argc, char** argv)
     ros::NodeHandle nh;
 
     // subscriber Etat (fourni par le modele du grp 1)
-    ros::Subscriber etat_sub = nh.subscribe ("/EtatRobot", 10, etatCallback);
+    ros::Subscriber etat_sub = nh.subscribe ("/joint_states", 10, etatCallback);
 
     // subscriber Trajectoire (fourni par le grp 4)
     ros::Subscriber traj_sub = nh.subscribe ("/Trajectoire", 10, trajCallback);
 
-    // publisher
-    ros::Publisher couple_pub = nh.advertise<sensor_msgs::JointState>("/CommandeMoteur", 10);
+    // publisher effort q1
+    ros::Publisher couple1_pub = nh.advertise<std_msgs::Float64>("/hand_effort_controller/command", 10);
+
+    // publisher effort q2
+    ros::Publisher couple2_pub = nh.advertise<std_msgs::Float64>("/finger_effort_controller/command", 10);
 
     // service
     ros::ServiceClient client = nh.serviceClient<gkd_models::Dynamic>("Dynamic");
@@ -58,6 +63,9 @@ int main (int argc, char** argv)
 
     ros::Rate rate(1/Te);
 
+
+    commandeq1.data = 0;
+    commandeq2.data = 0;
 
     etat.position.resize(2);
     etat.velocity.resize(2);
@@ -120,14 +128,16 @@ int main (int argc, char** argv)
                 cout<<"effort q1= "<<commande.effort[0]<<endl;
                 cout<<"effort q2= "<<commande.effort[1]<<endl;
 
-                commande.name[0] = "q1";
-                commande.name[1] = "q2";
+                commandeq1.data = commande.effort[0];
+                commandeq2.data = commande.effort[1];
+
             }
         }
         
         
         // publish setpoint
-        couple_pub.publish(commande);
+        couple1_pub.publish(commandeq1);
+        couple2_pub.publish(commandeq2);
 
         ros::spinOnce();
         rate.sleep();
