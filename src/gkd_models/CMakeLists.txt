@@ -165,8 +165,10 @@ include_directories(
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
  catkin_install_python(PROGRAMS
-   src/Test_client
+   src/Test_clientMGD
    src/Test_clientMGI
+   src/Test_clientDynamic
+   src/Test_clientKinematic
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 
