@@ -42,6 +42,7 @@
 
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so"/>
+    <robotNamespace>/</robotNamespace>
   </gazebo>
 
   <!-- Generates a box visual/collision/inertial -->
@@ -72,7 +73,7 @@
   </xacro:macro>
 
   <!-- Generates child joint of parent -->
-  <xacro:macro name="arm_joint" params="child parent dist:=0 ">
+  <xacro:macro name="arm_joint" params="child parent dist">
 
     <joint name="${parent}_${child}_joint" type="revolute">
       <origin xyz="0 0 ${dist}" rpy="0 0 0"/>
@@ -163,13 +164,6 @@
  
   <!-- Camera not well defined-> go to 0, 0, 0 -->
    <link name="camera_link">
-   <!-- <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-    <box size="${camera_link} ${camera_link} ${camera_link}"/>
-      </geometry>
-    </collision>
-
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
@@ -177,17 +171,10 @@
       </geometry>
       <material name="red"/>
     </visual>
-
-    <inertial>
-      <mass value="1e-5" />
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
-    </inertial>-->
   </link>
   
    <joint name="camera_joint" type="fixed">
-    <axis xyz="0 1 0" />
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <origin xyz="0 0 ${finger_length}" rpy="0 0 0"/>
     <parent link="finger"/>
     <child link="camera_link"/>
   </joint>
