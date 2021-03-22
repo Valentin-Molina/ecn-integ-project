@@ -1,0 +1,11 @@
+<launch>
+
+	<!-- launch rviz simulation without joint state publisher gui -->
+	<include file="$(find integ_description)/launch/rviz.launch">
+		<arg name="gui" value="false"/>
+	</include>
+	
+	<!-- motion generation node -->
+	<node name="trapezoidal_planning" pkg="trapezoidal_planning" type="trapezoidal_planning"/>
+	
+</launch>
