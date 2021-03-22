@@ -1,15 +1,3 @@
-<<<<<<< HEAD
-To launch your model 
-
-with rviz, write 
-roslaunch integ_description rviz.launch in the terminal
-
-with gazebo, wirte
-roslaunch integ_gazebo arm.launch 
-
-
-
-=======
 # Integ_description
 
 ## Table of Contents
@@ -22,7 +10,7 @@ In this package you will find:
 * A file "arm.urdf.xacro" which defines our RR robot and the onboard camera.
 * A "target.urdf" file to describe the target model. 
 
-The camera is placed at the end of the end effector and only tracks targets in the XY plane. The simulation is launched on Rviz. For a simulation on Gazebo, see the launch files in the integ_gazebo folder.
+The camera is placed on the end effector and only tracks targets in the XY plane. The simulation is launched on Rviz. For a simulation on Gazebo, see the launch files in the integ_gazebo folder.
 
 ## Installation
 ***
@@ -33,4 +21,3 @@ $ cd ../ros/src
 $ catkin build integ_description
 $ roslaunch integ_description arm.rviz
 ```
->>>>>>> 7ff20e6579862d3002ab40e52713a13b50c56d87
