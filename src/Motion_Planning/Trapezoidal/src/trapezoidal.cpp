@@ -135,6 +135,7 @@ void TrapezoidalNode::emittingCallback(const ros::TimerEvent& event)
 {
     if(isEmitting())
     {
+        currentTrajectory_[0].header.stamp = ros::Time::now();
         pub_.publish(currentTrajectory_[0]);
         currentTrajectory_.erase(currentTrajectory_.begin());
     }
