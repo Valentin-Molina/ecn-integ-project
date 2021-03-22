@@ -1,4 +1,4 @@
-# ecn-integ-project/integ_description
+# Integ_description
 
 ## Table of Contents
 1. [General Info](#general-info)
