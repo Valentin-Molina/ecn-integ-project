@@ -1,0 +1,13 @@
+<launch>
+  <node pkg="suivi_traj" type="control_hand" name="control_pid_hand" clear_params = "true">
+    <param name="Kp" value = "1.2"  />
+    <param name="Kv" value = "1.2" />
+    <param name="Ki" value = "1.2" />
+  </node>
+  
+    <node pkg="suivi_traj" type="control_finger" name="control_pid_finger" clear_params = "true">
+    <param name="Kp" value = "1.2" />
+    <param name="Kv" value = "1.2" />
+    <param name="Ki" value = "1.2" />
+  </node>
+</launch>

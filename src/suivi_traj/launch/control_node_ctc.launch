@@ -1,0 +1,8 @@
+<launch>
+  <node pkg="suivi_traj" type="control_ctc" name="control_ctc" clear_params="true">
+    <param name="Kp1" value = "1.2"/>
+    <param name="Kv1" value = "1.2"/>
+    <param name="Kp2" value = "1.2"/>
+    <param name="Kv2" value = "1.2"/>
+ </node>
+</launch>
