@@ -28,5 +28,6 @@ $ cd ~
 $ git clone https://github.com/Valentin-Molina/ecn-integ-project
 $ cd ecn-intef-project
 $ catkin build
+$ source devel/setup.bash
 ```
 

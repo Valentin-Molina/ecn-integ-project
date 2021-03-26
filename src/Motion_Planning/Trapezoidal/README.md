@@ -17,7 +17,10 @@ space starting at the current joint state which is recevered on the
 topic /joint_states.
 When the node is running you could use the service /Waypoint_serv to
 generate a trajectory. (You cannot use the service when a trajectory is
-already in process).
+already in process). The waypoints are geometry_msgs/Pose2D, the x value
+is used for the first angular joint (theta1) and the y value is used for
+the second angular joint (theta2) (the value of theta is not used).
+You can see and use the scrip TestMotionPlanning.sh to test the node.
 The trajectory is then sent on the topic /Trajectoire.
 
 ## Installation
