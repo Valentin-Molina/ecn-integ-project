@@ -28,6 +28,10 @@ which are the two maximum joint velocitiers and the two maximum joint
 accelerations. These parameters are called vMax1, vMax2, aMax1 and 
 aMax2.
 
+The frequency used for publishing (and computing) the trajectory on 
+/Trajectoire is set to 100Hz by default. It can be changed on the source 
+code if necessary.
+
 ## Installation
 ***
 Download the projet to your user home using the following commands.
