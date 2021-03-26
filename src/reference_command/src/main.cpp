@@ -80,8 +80,8 @@ int main(int argc, char **argv)
 
 		auto qPoint = finalMatrix.pseudoInverse() * sPoint;
 
-		targetJointState.name.push_back("joint_1");
-		targetJointState.name.push_back("joint_2");
+		targetJointState.name.push_back("Vx");
+		targetJointState.name.push_back("Vy");
 		targetJointState.velocity.push_back(qPoint[0][0]);
 		targetJointState.velocity.push_back(qPoint[1][0]);
 		velocity_pub.publish(targetJointState);
