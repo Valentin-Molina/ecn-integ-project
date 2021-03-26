@@ -12,6 +12,6 @@ La cible se lance avec le launchfile du robot, "arm.launch" dans le package "int
 
 #modifications
 
-Il est possible de modifier la trajectoire de la cible en modifiant l'amplitude et la fréquence de la sinusoide dans le node ou en changeant les valeurs de "model_state_srv_msg.request.model_state.pose.position"
+Il est possible de modifier la trajectoire de la cible en modifiant l'amplitude et la fréquence de la sinusoide dans le node en changeant les valeurs de "model_state_srv_msg.request.model_state.pose.position"
 
     
