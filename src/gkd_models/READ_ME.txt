@@ -1,16 +1,16 @@
 Utilisation du package gkd_models:
 
 Il est dans un premier temps nécessaire de rendre les scripts executables, pour cela :
-- Ouvrir l'exploratuer de fichiers
+- Ouvrir l'explorateur de fichiers
 - Aller dans scripts
-- Selectionner tous les fichiers .py
-- clique droit
+- Selectionner le fichier gkd.py
+- clic droit
 - Propriétés 
 - Permissions
 - Cocher "allow this file to run as a programm"
 
-Pour utilisier les services, il est nécessaire que chacun d'entre eux aient étés lancés en tant que noeud
-(rosrun gkd_models [nom_du_service] dans la console, ou via un launch file)
+Pour utilisier les services, il est nécessaire de lancer le noeud gkd.py
+rosrun gkd_models gkd.py          dans la console, ou via un launch file
 
 Les services peuvent alors être appelés à l'intérieur d'un autre noeud par les lignes suivantes:
 
