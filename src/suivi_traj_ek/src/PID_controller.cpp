@@ -47,7 +47,7 @@ int main (int argc, char** argv)
     // publisher effort q2
     ros::Publisher couple2_pub = nh.advertise<std_msgs::Float64>("/finger_effort_controller/command", 10);
 
-    float Kp0=1, Kp1=1, Kd0=1, Kd1=1, Ki0=1, Ki1=1, Te=0.01;
+    float Kp0=120, Kp1=100, Kd0=0.1, Kd1=0.1, Ki0=0.1, Ki1=0.1, Te=0.01;
     float integrale[2] = {};
     float err[2] = {}, err_p[2] = {};
 
@@ -70,17 +70,26 @@ int main (int argc, char** argv)
         err[0] = traj.position[0] - etat.position[0];
         err_p[0] = traj.velocity[0] - etat.velocity[0];
         integrale[0] += err[0]*Te;
-        commandeq1.data = Kp0*err[0] + Kd0*err_p[0] + Ki0*integrale[0];
+        commandeq1.data = Kp0*err[0] + Kd0*err_p[0]/Te + Ki0*integrale[0];
+
+        //cout<<"commande P: "<<Kp0*err[0]<<endl;
+        //cout<<"commande D: "<<Kd0*err_p[0]/Te<<endl;
+        //cout<<"commande I: "<<Ki0*integrale[0]<<endl;
 
 
         err[1] = traj.position[1] - etat.position[1];
         err_p[1] = traj.velocity[1] - etat.velocity[1];
         integrale[1] += err[1]*Te;
-        commandeq2.data = Kp1*err[1] + Kd1*err_p[1] + Ki1*integrale[1];
+        commandeq2.data = Kp1*err[1] + Kd1*err_p[1]/Te + Ki1*integrale[1];
 
 
+        //cout<<"commande P: "<<Kp1*err[1]<<endl;
+        //cout<<"commande D: "<<Kd1*err_p[1]/Te<<endl;
+        //cout<<"commande I: "<<Ki1*integrale[1]<<endl;
 
 
+        //cout<<"etat position q1: "<<etat.position[0]<<endl;
+        //cout<<"etat position q2: "<<etat.position[1]<<endl;
 
         cout<<"error position q1: "<<err[0]<<endl;
         cout<<"error position q2: "<<err[1]<<endl;
