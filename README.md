@@ -21,10 +21,12 @@ A list of technologies used within the project:
 * [Gazebo](https://example.com): Version 9.0
 ## Installation
 ***
-Download the projet to your ROS workspace using the following commands 
+Download the projet to your user home using the following commands 
+The repository will be a ros workspace.
 ```
-$ git clone https://github.com/Valentin-Molina/ecn-integ-project.git
-$ cd ../ros/src
+$ cd ~
+$ git clone https://github.com/Valentin-Molina/ecn-integ-project
+$ cd ecn-intef-project
 $ catkin build
 ```
 
