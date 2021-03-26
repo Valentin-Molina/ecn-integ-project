@@ -23,6 +23,11 @@ the second angular joint (theta2) (the value of theta is not used).
 You can see and use the scrip TestMotionPlanning.sh to test the node.
 The trajectory is then sent on the topic /Trajectoire.
 
+When running the trapezoidal_planning node, you could set 4 parameters 
+which are the two maximum joint velocitiers and the two maximum joint 
+accelerations. These parameters are called vMax1, vMax2, aMax1 and 
+aMax2.
+
 ## Installation
 ***
 Download the projet to your user home using the following commands.

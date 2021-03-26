@@ -21,7 +21,7 @@ A list of technologies used within the project:
 * [Gazebo](https://example.com): Version 9.0
 ## Installation
 ***
-Download the projet to your user home using the following commands 
+Download the projet to your user home using the following commands.
 The repository will be a ros workspace.
 ```
 $ cd ~
