@@ -10,3 +10,6 @@ Pour faire tourner un noeud:
 rosrun suivi_traj_ek Commande_CTC
 ou
 rosrun suivi_traj_ek Commande_PID
+
+
+Le noeud Commande_CTC ne fonctionne pas correctement. On pense que c'est liee au service qui ne prend pas en compte les vrais parametres du robot.
