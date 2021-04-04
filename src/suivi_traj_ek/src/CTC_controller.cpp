@@ -163,8 +163,8 @@ int main (int argc, char** argv)
                 //cout<<"effort q1= "<<commande.effort[0]<<endl;
                 //cout<<"effort q2= "<<commande.effort[1]<<endl;
 
-                commandeq1.data = -commande.effort[0];
-                commandeq2.data = -commande.effort[1];
+                commandeq1.data = commande.effort[0];
+                commandeq2.data = commande.effort[1];
 
             }
         }
